@@ -1,13 +1,12 @@
 # ARKS NEXUS
 
 [日本語](README.md) | 中文
-<img width="1848" height="1223" alt="image" src="https://github.com/user-attachments/assets/c40e358c-237f-4ba5-bef3-d8ad4358a2e4" />
-<img width="1840" height="1458" alt="image" src="https://github.com/user-attachments/assets/286b926f-b688-43c2-839a-76d122f9bedf" />
-<img width="1873" height="1518" alt="image" src="https://github.com/user-attachments/assets/ac8e3587-668f-42fb-be52-b81e977ad78d" />
-<img width="1871" height="1283" alt="image" src="https://github.com/user-attachments/assets/404e34d2-63df-438f-9cef-ee6bdee46d2a" />
-<img width="1880" height="1260" alt="image" src="https://github.com/user-attachments/assets/ab788b94-a23a-4bec-84b8-099c8212dac9" />
-<img width="1878" height="1539" alt="image" src="https://github.com/user-attachments/assets/a2a0d63d-e7a3-4c3d-a5fe-70976ddd2b8c" />
-
+<img width="1853" height="883" alt="image" src="https://github.com/user-attachments/assets/c5b5f170-d7aa-4e8d-b94b-fa6efc1b1a02" />
+<img width="1843" height="1449" alt="image" src="https://github.com/user-attachments/assets/ebbcd456-4e04-46ea-b34b-758623b92d42" />
+<img width="1844" height="1452" alt="image" src="https://github.com/user-attachments/assets/c8df335a-affd-49bc-825b-601f6666f7e9" />
+<img width="1848" height="1196" alt="image" src="https://github.com/user-attachments/assets/2ca0e827-5fd4-4258-9f8b-0f329fd4259e" />
+<img width="1857" height="1429" alt="image" src="https://github.com/user-attachments/assets/15d3f83c-54ed-4a81-838f-a0c34aea0d25" />
+<img width="1857" height="1109" alt="image" src="https://github.com/user-attachments/assets/8305077e-ec01-42f3-b1f4-dd6338dfcb44" />
 
 集中启动 5 个 NGS / PSO2 模拟器。
 
