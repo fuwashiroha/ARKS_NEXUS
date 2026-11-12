@@ -1,0 +1,95 @@
+'use strict';
+const D=window.SKILL_DATA,E=window.SkillEngine;
+const CLASSES={hunter:['猎人','Hu','ハンター'],fighter:['斗士','Fi','ファイター'],ranger:['游侠','Ra','レンジャー'],gunner:['鹰眼','Gu','ガンナー'],force:['法师','Fo','フォース'],techter:['术士','Te','テクター'],braver:['勇者','Br','ブレイバー'],bouncer:['跃动者','Bo','バウンサー'],summoner:['召唤师','Su','サモナー'],hero:['英雄','Hr','ヒーロー'],phantom:['幻影','Ph','ファントム'],etoile:['闪星','Et','エトワール'],luster:['辉刃','Lu','ラスター']};
+const SUCCESSORS=['hero','phantom','etoile','luster'];const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),plain=s=>s.replace(/<br\s*\/?\s*>/gi,'').trim();
+let state=JSON.parse(JSON.stringify(window.DEFAULT_STATE)),selected=0,scale=0.85,timer,lang=(()=>{try{return localStorage.getItem('pso2-lang')==='zh'?'zh':'ja'}catch{return 'ja'}})();
+const sn=s=>lang==='ja'?(s.nameJa||s.name):(s.nameZh||s.name),sd=s=>lang==='ja'?(s.desc.textJa||s.desc.text):(s.desc.textZh||s.desc.text),pa=p=>lang==='ja'?(p.paramAttrJa||p.paramAttr):(p.paramAttrZh||p.paramAttr);
+const ui=(zh,ja)=>lang==='ja'?ja:zh,cn=k=>lang==='ja'?CLASSES[k][2]:CLASSES[k][0];
+function buildKey(role=state.active,key=state[role]){return role==='main'?'main:'+key:'sub:'+state.main+':'+key}
+function validate(x){
+ const has=k=>Object.hasOwn(CLASSES,k),validSub=(m,k)=>k==='none'||(has(k)&&k!==m&&k!=='hero'&&!SUCCESSORS.includes(m));
+ if(!x||![1,2].includes(x.v)||!has(x.main)||!validSub(x.main,x.sub)||!x.builds||typeof x.builds!=='object'||Array.isArray(x.builds))throw Error('state');
+ const y={v:2,main:x.main,sub:x.sub,active:x.active==='sub'&&x.sub!=='none'?'sub':'main',subs:{},builds:{}};
+ if(x.v===2){if(!x.subs||typeof x.subs!=='object'||Array.isArray(x.subs))throw Error('subs');for(const [m,k] of Object.entries(x.subs)){if(!has(m)||!validSub(m,k))throw Error('sub');y.subs[m]=k}}
+ y.subs[y.main]=y.sub;
+ for(const [id,b] of Object.entries(x.builds)){
+  const parts=id.split(':'),role=parts[0],key=parts.at(-1);
+  if(!has(key)||!['main','sub'].includes(role)||parts.length!==(role==='main'||x.v===1?2:3)||role==='sub'&&x.v===2&&(!has(parts[1])||!validSub(parts[1],key)))throw Error('build key');
+  if(!b||!Number.isInteger(b.level)||b.level<1||b.level>100||!Number.isInteger(b.extra)||b.extra<0||b.extra>14||!Array.isArray(b.points)||b.points.length!==D[key].length)throw Error('build');
+  if(b.points.some((n,i)=>!Number.isInteger(n)||n<0||n>D[key][i].maxValue))throw Error('points');
+  const q=E.clean({key,level:b.level,extra:b.extra,points:[...b.points]});
+  if(E.spent(q)>q.level+q.extra||q.points.some((n,i)=>n!==b.points[i]))throw Error('invalid allocation');
+  if(role==='sub'&&x.v===1){for(const m of Object.keys(CLASSES))if(validSub(m,key))y.builds['sub:'+m+':'+key]=JSON.parse(JSON.stringify(q))}else y.builds[id]=q;
+ }
+ return y;
+}
+
+try{if(location.hash.startsWith('#build=')){state=validate(JSON.parse(atob(location.hash.slice(7))));history.replaceState(null,'',location.pathname+location.search)}else {const raw=localStorage.getItem('pso2-classic-v2')||localStorage.getItem('pso2-classic-v1');if(raw)state=validate(JSON.parse(raw))}}catch{setTimeout(()=>notify('保存数据或配点链接无效，已载入默认技能树。'),100)}
+function defaultBuild(role=state.active,key=state[role]){const b=window.DEFAULT_STATE.builds[buildKey(role,key)];return b?JSON.parse(JSON.stringify(b)):E.blank(key)}
+function get(role=state.active){const key=state[role];if(key==='none')return null;return state.builds[buildKey(role,key)]??=defaultBuild(role,key)}
+function save(){try{localStorage.setItem('pso2-classic-v2',JSON.stringify(state));$('#save-status').textContent=''}catch{$('#save-status').textContent='浏览器未允许本地保存'}}
+function notify(s){$('#toast').textContent=window.translateUI(s);$('#toast').classList.add('show');clearTimeout(timer);timer=setTimeout(()=>$('#toast').classList.remove('show'),3400)}
+function opts(vals,current){return vals.map(([v,t])=>`<option value="${v}" ${String(current)===String(v)?'selected':''}>${t}</option>`).join('')}
+function renderBuild(role){const key=state[role],b=get(role),isSub=role==='sub',disabled=isSub&&SUCCESSORS.includes(state.main),choices=Object.entries(CLASSES).filter(([k])=>isSub?k!==state.main&&k!=='hero':true).map(([k,v])=>[k,`${cn(k)} ${v[1]}`]);if(isSub)choices.unshift(['none',ui('无副职业','サブクラスなし')]);const n=b?E.spent(b):0,total=b?b.level+b.extra:0;
+$('#'+role+'-build').innerHTML=`<section class="build ${state.active===role?'active':''}" data-role="${role}"><div class="build-top"><h2>${b?`<img alt="" src="icons/class_icon_${key}.png">`:''}${isSub?ui('副职业','サブクラス'):ui('主职业','メインクラス')}</h2>${b?`<div class="sp"><b>${n}</b><span>/ ${total} SP</span><small>${ui('剩余','残り')} ${total-n}</small></div><button type="button" aria-pressed="${state.active===role}">${state.active===role?ui('编辑中','編集中'):ui('编辑','編集')}</button>`:''}</div><div class="build-settings"><label>${ui('职业','クラス')}<select aria-label="${isSub?ui('副职业','サブクラス'):ui('主职业','メインクラス')}" data-class="${role}" ${disabled?'disabled':''}>${opts(choices,key)}</select></label>${b?`<label>${ui('等级','レベル')}<select data-level="${role}" aria-label="${isSub?ui('副职业等级','サブクラスレベル'):ui('主职业等级','メインクラスレベル')}">${opts(Array.from({length:100},(_,i)=>[i+1,i+1]),b.level)}</select></label><label>${ui('追加 SP','追加 SP')}<select data-extra="${role}" aria-label="${isSub?ui('副职业追加SP','サブクラス追加SP'):ui('主职业追加SP','メインクラス追加SP')}">${opts(Array.from({length:15},(_,i)=>[i,i]),b.extra)}</select></label>`:''}</div>${b?`<div class="progress"><i style="width:${n/total*100}%"></i></div>`:`<div class="disabled-note">${disabled?ui('后继职业不能设置副职业。','後継クラスはサブクラスを設定できません。'):ui('未设置副职业','サブクラスなし')}</div>`}</section>`;
+}
+function render(){if(state.sub==='none')state.active='main';const b=get();document.documentElement.lang=lang==='ja'?'ja':'zh-CN';$('#language').value=lang;renderBuild('main');renderBuild('sub');$('#tree-title').textContent=`${cn(b.key)} ${CLASSES[b.key][1]}`;$('#skill-count').textContent=`${state.active==='main'?ui('主职业','メインクラス'):ui('副职业','サブクラス')} · ${D[b.key].filter(s=>s.maxValue).length} ${ui('个技能','スキル')}`;drawTree();drawDetail();save();window.localizeUI()}
+function position(i){return {x:18+i%6*202,y:24+Math.floor(i/6)*148}}
+function drawTree(){const b=get(),t=D[b.key],height=Math.ceil(t.length/6)*148+20;$('#tree').style.height=height+'px';$('#tree').style.transform=`scale(${scale})`;$('#tree-size').style.width=1228*scale+'px';$('#tree-size').style.height=height*scale+'px';let edges='';
+$('#nodes').innerHTML=t.map((s,i)=>{if(!s.maxValue)return '';const p=position(i),lv=b.points[i],ready=b.level>=s.rqLv&&(s.preSkill<0||b.points[s.preSkill]>=s.preValue),automatic=s.free||s.default;if(s.preSkill>=0){let j=s.preSkill;while(!t[j].maxValue&&t[j].preSkill>=0)j=t[j].preSkill;const a=position(j),mid=p.y-19;edges+=`<path class="edge ${ready?'on':''}" d="M ${a.x+92} ${a.y+109} V ${mid} H ${p.x+92} V ${p.y}"/>${s.preValue>0?`<rect class="edge-badge" x="${p.x+80}" y="${mid-7}" width="24" height="14" rx="3"/><text class="edge-label ${ready?'on':''}" x="${p.x+92}" y="${mid+4}" text-anchor="middle">${s.preValue}</text>`:''}`}
+return `<article class="node ${lv?'learned':ready?'':'locked'} ${s.mainOnly?'mainonly':''} ${i===selected?'selected':''}" style="left:${p.x}px;top:${p.y}px" data-node="${i}"><div class="node-head" tabindex="0" role="button" aria-label="${esc(plain(sn(s)))}"><img src="icons/skill_icon_${s.img}.png" alt=""><div class="node-name">${sn(s)}</div></div><div class="node-meta"><span>${s.mainOnly?ui('主职限定','メイン限定'):s.subOnly?ui('副职限定','サブ限定'):s.rqLv?'Lv.'+s.rqLv:ui('技能等级','スキルレベル')}</span><span>${lv} / ${s.maxValue}</span></div>${automatic?`<div class="auto-text">${lv?'✓ '+(s.default?ui('初始习得','初期習得'):ui('自动习得','自動習得')):'Lv.'+s.rqLv+' '+ui('解锁','解放')} · 0 SP</div>`:`<div class="ranks">${Array.from({length:s.maxValue+1},(_,n)=>`<button data-rank="${n}" aria-label="${esc(plain(sn(s)))} ${n===0?ui('取消','解除'):'Lv.'+n}" class="${n>0&&n<=lv?'filled':''}" ${b.level<s.rqLv?'disabled':''}>${n===s.maxValue?'M':n}</button>`).join('')}</div>`}</article>`}).join('');$('#connections').innerHTML=edges}
+function value(p,lv){const v=p.paramPat[lv],u=p.unit;if(v==null)return '—';return (u.includes('A')?'+':u.includes('S')?'-':'')+v+(u.includes('M')?'%':u.includes('s')?ui(' 秒',' 秒'):u.includes('T')?ui(' 次',' 回'):u.includes('R')?ui(' 发',' 発'):'')}
+function drawDetail(){const b=get(),t=D[b.key];if(!t[selected]?.maxValue)selected=t.findIndex(s=>s.maxValue);const s=t[selected],lv=b.points[selected],inactive=(state.active==='sub'&&s.mainOnly)||(state.active==='main'&&s.subOnly);$('#detail').innerHTML=`<div class="detail-kicker">${ui('技能详情','スキル詳細')}</div><div class="detail-heading"><img src="icons/skill_icon_${s.img}.png" alt=""><h3>${sn(s)}</h3></div><div class="detail-level">${lv}<small> / ${s.maxValue}</small></div><div class="tags">${s.mainOnly?`<span class="tag pink">${ui('主职限定','メイン限定')}</span>`:''}${s.subOnly?`<span class="tag pink">${ui('副职限定','サブ限定')}</span>`:''}${s.default||s.free?`<span class="tag">${ui('不消耗 SP','SP消費なし')}</span>`:''}${s.rqLv?`<span class="tag">Lv.${s.rqLv} ${ui('解锁','解放')}</span>`:''}${s.active?`<span class="tag">${ui('主动技能','アクティブスキル')}</span>`:''}</div>${inactive?`<p class="main-only">${ui('此技能在当前主副职业位置不生效。','現在のメイン・サブ設定では無効です。')}</p>`:''}<div class="detail-desc">${sd(s)}</div><div class="prereq">${s.preSkill>=0&&s.preValue>0?`${ui('前置','前提')}：${esc(plain(sn(t[s.preSkill])))} Lv.${s.preValue}`:ui('无消耗 SP 的前置要求','SPを消費する前提スキルなし')}<br>${s.free||s.default?ui('随职业等级自动习得。','クラスレベルに応じて自動習得。'):ui('加点时会自动补齐所需前置。','レベル選択時に必要な前提を自動取得。')}</div>${!s.free&&!s.default?`<div class="detail-controls"><button data-action="minus">− 1</button><button data-action="plus">+ 1</button><button data-action="max">${ui('加满','最大')}</button></div>`:''}<div class="table-wrap"><table><thead><tr><th>Lv.</th>${s.desc.params.map(p=>`<th>${esc(pa(p))}</th>`).join('')}</tr></thead><tbody>${Array.from({length:s.maxValue},(_,n)=>`<tr class="${n+1===lv?'current-row':''}"><td>${n+1}</td>${s.desc.params.map(p=>`<td>${esc(value(p,n+1))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function change(i,v){selected=i;const result=E.set(get(),i,v);if(result.error){notify(result.error);drawTree();drawDetail();return}state.builds[buildKey()]=result.build;render()}
+function choose(role,key){
+ if(role==='sub'&&(SUCCESSORS.includes(state.main)||key==='hero'||key===state.main))return;
+ if(role==='main'){state.subs[state.main]=state.sub;state.main=key;state.sub=SUCCESSORS.includes(key)?'none':state.subs[key]??window.DEFAULT_STATE.subs[key]??'none'}
+ else {state.sub=key;state.subs[state.main]=key}
+ state.active=key==='none'?'main':role;selected=0;render();$('#tree-scroll').scrollTo(0,0)
+}
+
+document.addEventListener('click',e=>{const rank=e.target.closest('[data-rank]'),node=e.target.closest('[data-node]');if(rank){change(+node.dataset.node,+rank.dataset.rank);return}if(node){selected=+node.dataset.node;drawTree();drawDetail();return}const action=e.target.closest('[data-action]');if(action){const s=D[get().key][selected];change(selected,action.dataset.action==='max'?s.maxValue:get().points[selected]+(action.dataset.action==='plus'?1:-1));return}const build=e.target.closest('[data-role]');if(build&&!e.target.closest('select')&&state[build.dataset.role]!=='none'){state.active=build.dataset.role;selected=0;render()}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.node-head')){e.preventDefault();selected=+e.target.closest('[data-node]').dataset.node;drawTree();drawDetail()}});
+$('#nodes').addEventListener('contextmenu',e=>{const node=e.target.closest('[data-node]');if(node){e.preventDefault();const i=+node.dataset.node;change(i,get().points[i]-1)}});
+document.addEventListener('change',e=>{if(e.target.dataset.class){choose(e.target.dataset.class,e.target.value);return}const role=e.target.dataset.level||e.target.dataset.extra;if(role){const b=get(role),next=E.clean({...b,points:[...b.points],[e.target.dataset.level?'level':'extra']:+e.target.value});if(E.spent(next)>next.level+next.extra){notify('调整后 SP 不足，请先减少配点或重置技能树。');render();return}state.builds[buildKey(role,b.key)]=next;render()}});
+$('#language').addEventListener('change',e=>{lang=e.target.value==='ja'?'ja':'zh';try{localStorage.setItem('pso2-lang',lang)}catch{}render()});$('#zoom').addEventListener('change',e=>{if(e.target.value==='fit')fitTree();else{scale=+e.target.value;drawTree()}});$('#reset').onclick=()=>{const b=get();if(E.spent(b)&&!confirm(ui('清空当前配点？等级与追加 SP 将保留。','現在の配分をすべて消去しますか？レベルと追加SPは保持されます。')))return;state.builds[buildKey()]=E.blank(b.key,b.level,b.extra);render();notify(ui('当前配点已清空。','現在の配分を消去しました。'))};
+render();
+
+$('#restore-default').onclick=()=>{if(!confirm(ui('将当前技能树恢复为默认方案（含等级与追加SP）？当前配点将被替换。','現在のツリーを初期配分（レベル・追加SPを含む）に戻しますか？現在の配分は上書きされます。')))return;state.builds[buildKey()]=defaultBuild();render();notify(ui('已恢复默认配点。','初期配分に戻しました。'))};
+
+function exportData(){const copy=JSON.parse(JSON.stringify(state));for(const key of Object.keys(CLASSES)){copy.builds['main:'+key]??=defaultBuild('main',key);copy.subs[key]??=window.DEFAULT_STATE.subs[key]||'none'}return {format:'pso2-skill-simulator',version:1,language:lang,state:copy}}
+function parseImport(text){const data=JSON.parse(text.replace(/^\uFEFF/,''));if(data.format!==undefined&&(data.format!=='pso2-skill-simulator'||data.version!==1))throw Error('format');return {state:validate(data.state||data),language:data.language}}
+$('#export-builds').onclick=()=>{const blob=new Blob([JSON.stringify(exportData(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PSO2-Skill-Builds.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('#import-builds').onclick=()=>$('#import-file').click();
+$('#import-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>5*1024*1024)throw Error('size');const imported=parseImport(await f.text());if(!confirm(ui('导入将替换全部职业方案及副职业设置，是否继续？','全クラスの配分とサブクラス設定を置き換えますか？')))return;state=imported.state;if(['zh','ja'].includes(imported.language)){lang=imported.language;try{localStorage.setItem('pso2-lang',lang)}catch{}}selected=0;render();notify(ui('全部配点已导入。','全クラスの配分を読み込みました。'))}catch{notify(ui('文件无效或配点不合法，未修改现有存档。','ファイルまたは配分が無効です。既存データは変更していません。'))}finally{e.target.value=''}};
+
+$('#save-screenshot').onclick=async()=>{
+ const button=$('#save-screenshot'),b=JSON.parse(JSON.stringify(get())),role=state.active,language=lang;
+ const name=k=>(language==='ja'?CLASSES[k][2]:CLASSES[k][0])+' '+CLASSES[k][1];
+ const snapshot={build:b,skills:D[b.key],language,role,title:name(b.key),main:name(state.main),sub:state.sub==='none'?(language==='ja'?'なし':'无'):name(state.sub),spent:E.spent(b)};
+ button.disabled=true;
+ try{await window.saveSkillScreenshot(snapshot);notify(language==='ja'?'画像を書き出しました。':'完整天赋截图已导出。')}
+ catch(error){console.error(error);notify(language==='ja'?'画像の保存に失敗しました。もう一度お試しください。':'截图保存失败，请重试。')}
+ finally{button.disabled=false}
+};
+
+$('#clear-all').onclick=()=>{
+ if(!confirm(ui('清空所有职业的主副职配点？将保留等级、追加 SP 和副职选择，仅保留初始及自动习得技能。建议先导出配点备份。','全クラスのメイン・サブ配分を消去しますか？レベル・追加SP・サブクラス設定は保持し、初期・自動習得スキルのみ残します。事前の書き出しをおすすめします。')))return;
+ const builds={};
+ const blank=id=>{const key=id.split(':').at(-1),old=state.builds[id]||window.DEFAULT_STATE.builds[id];return E.blank(key,old?.level??100,old?.extra??14)};
+ for(const main of Object.keys(CLASSES)){
+  const id='main:'+main;builds[id]=blank(id);
+  if(SUCCESSORS.includes(main))continue;
+  for(const sub of Object.keys(CLASSES))if(sub!==main&&sub!=='hero'){const id='sub:'+main+':'+sub;builds[id]=blank(id)}
+ }
+ state.builds=builds;selected=0;render();notify(ui('所有职业的主副职配点已清空。','全クラスのメイン・サブ配分を消去しました。'));
+};
+$('#reset-all').onclick=()=>{
+ if(!confirm(ui('将所有职业的主副职配点、等级、追加 SP 及副职选择恢复为默认设置？现有全部方案将被替换，建议先导出配点备份。','全クラスのメイン・サブ配分、レベル、追加SP、サブクラス設定を初期設定に戻しますか？現在の全構成を置き換えます。事前の書き出しをおすすめします。')))return;
+ state=JSON.parse(JSON.stringify(window.DEFAULT_STATE));selected=0;render();$('#tree-scroll').scrollTo(0,0);notify(ui('所有职业的配点及副职选择已恢复默认。','全クラスの配分とサブクラス設定を初期設定に戻しました。'));
+};
+
+function fitTree(){if($('#zoom').value!=='fit')return;const next=Math.max(.7,Math.min(1,($('#tree-scroll').clientWidth-16)/1228));if(Math.abs(next-scale)>.001){scale=next;drawTree()}}
+function resizeWorkspace(){const workspace=$('.workspace'),top=workspace.getBoundingClientRect().top+window.scrollY;workspace.style.setProperty('--workspace-height',Math.max(280,window.innerHeight-top-76)+'px');fitTree()}
+if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(resizeWorkspace);for(const element of [$('header'),$('.buildbar'),$('.toolbar'),$('.legend'),$('#tree-scroll')])observer.observe(element)}
+window.addEventListener('resize',resizeWorkspace);resizeWorkspace();
