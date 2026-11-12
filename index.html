@@ -54,8 +54,8 @@
 })();
 </script>
 <style>
-:root{color-scheme:light;--bg:#c3ced7;--panel:#e8eff3;--text:#273943;--muted:#4c6473;--line:#a8bbc9;--hover:#e8f1f680;--selected:#e8f1f6cc;--focus:#305e72;--pattern:url("BG/rappy-pattern-light.svg");font-family:Arial,"Microsoft YaHei","Meiryo",sans-serif}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#10171f;--panel:#18242f;--text:#e2ebf0;--muted:#a9bdcc;--line:#3e5566;--hover:#30495b80;--selected:#30495bcc;--focus:#91cbe9;--pattern:url("BG/rappy-pattern-dark.svg")}
+:root{color-scheme:light;--bg:#c3ced7;--panel:#e8eff3;--text:#273943;--muted:#4c6473;--line:#a8bbc9;--hover:#e8f1f680;--selected:#e8f1f6cc;--focus:#305e72;--pattern:url("backgrounds/rappy-pattern-light.svg");font-family:Arial,"Microsoft YaHei","Meiryo",sans-serif}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#10171f;--panel:#18242f;--text:#e2ebf0;--muted:#a9bdcc;--line:#3e5566;--hover:#30495b80;--selected:#30495bcc;--focus:#91cbe9;--pattern:url("backgrounds/rappy-pattern-dark.svg")}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background-color:var(--bg);background-image:var(--pattern);background-size:220px 220px;color:var(--text);font-size:14px;line-height:1.5}
 a{color:inherit;text-decoration:none}
@@ -96,11 +96,11 @@ a{color:inherit;text-decoration:none}
 </header>
 <main class="desktop">
   <ul class="simulators" id="simulators" aria-label="模拟器列表">
-    <li><a class="simulator" href="NGS配装模拟器/index.html" target="_blank" rel="noopener" aria-label="NGS配装模拟器，在新标签页打开"><img src="启动页资源/ngs.png" width="64" height="64" alt=""><span><span class="game">NGS</span><span data-i18n="equipment">配装模拟器</span></span></a></li>
-    <li><a class="simulator" href="PSO2配装模拟器/index.html" target="_blank" rel="noopener" aria-label="PSO2配装模拟器，在新标签页打开"><img src="启动页资源/pso2.png?v=1a6cb08b77" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="equipment">配装模拟器</span></span></a></li>
-    <li><a class="simulator" href="PSO2追加模拟器/index.html" target="_blank" rel="noopener" aria-label="PSO2特殊能力追加模拟器，在新标签页打开"><img src="启动页资源/affix.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="affix">追加模拟器</span></span></a></li>
-    <li><a class="simulator" href="PSO2加点模拟器/index.html" target="_blank" rel="noopener" aria-label="PSO2技能加点模拟器，在新标签页打开"><img src="启动页资源/skills.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="skills">加点模拟器</span></span></a></li>
-    <li><a class="simulator" href="PSO2糖果盒模拟器/index.html" target="_blank" rel="noopener" aria-label="PSO2糖果盒模拟器，在新标签页打开"><img src="启动页资源/candy.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="candy">糖果盒模拟器</span></span></a></li>
+    <li><a class="simulator" href="ngs-equipment/index.html" target="_blank" rel="noopener" aria-label="NGS配装模拟器，在新标签页打开"><img src="launcher-assets/ngs.png" width="64" height="64" alt=""><span><span class="game">NGS</span><span data-i18n="equipment">配装模拟器</span></span></a></li>
+    <li><a class="simulator" href="pso2-equipment/index.html" target="_blank" rel="noopener" aria-label="PSO2配装模拟器，在新标签页打开"><img src="launcher-assets/pso2.png?v=1a6cb08b77" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="equipment">配装模拟器</span></span></a></li>
+    <li><a class="simulator" href="pso2-affix/index.html" target="_blank" rel="noopener" aria-label="PSO2特殊能力追加模拟器，在新标签页打开"><img src="launcher-assets/affix.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="affix">追加模拟器</span></span></a></li>
+    <li><a class="simulator" href="pso2-skills/index.html" target="_blank" rel="noopener" aria-label="PSO2技能加点模拟器，在新标签页打开"><img src="launcher-assets/skills.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="skills">加点模拟器</span></span></a></li>
+    <li><a class="simulator" href="pso2-candy-box/index.html" target="_blank" rel="noopener" aria-label="PSO2糖果盒模拟器，在新标签页打开"><img src="launcher-assets/candy.png" width="64" height="64" alt=""><span><span class="game">PSO2</span><span data-i18n="candy">糖果盒模拟器</span></span></a></li>
   </ul>
 </main>
 <footer class="sim-copyright">PSO2 © SEGA</footer>

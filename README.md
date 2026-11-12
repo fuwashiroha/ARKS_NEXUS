@@ -12,6 +12,19 @@ NGS / PSO2 の5つのシミュレーターをまとめたランチャーです�
 
 ## シミュレーター
 
+フォルダー名は英語で統一しています。ルートの `index.html` から各シミュレーターを開けます。
+
+```text
+index.html
+ngs-equipment/
+pso2-equipment/
+pso2-affix/
+pso2-skills/
+pso2-candy-box/
+launcher-assets/
+backgrounds/
+```
+
 | ツール | 個別リポジトリ |
 | --- | --- |
 | NGS 装備シミュレーター | [NGS_Equipment_Simulator](https://github.com/fuwashiroha/NGS_Equipment_Simulator) |

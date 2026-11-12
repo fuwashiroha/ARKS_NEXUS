@@ -12,6 +12,19 @@
 
 ## 模拟器
 
+文件夹统一使用英文名称，从根目录的 `index.html` 进入各模拟器。
+
+```text
+index.html
+ngs-equipment/
+pso2-equipment/
+pso2-affix/
+pso2-skills/
+pso2-candy-box/
+launcher-assets/
+backgrounds/
+```
+
 | 工具 | 独立仓库 |
 | --- | --- |
 | NGS 配装模拟器 | [NGS_Equipment_Simulator](https://github.com/fuwashiroha/NGS_Equipment_Simulator) |
