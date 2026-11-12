@@ -1,8 +1,8 @@
 # ARKS NEXUS
 
 日本語 | [中文](README_CN.md)
-<img width="1880" height="1281" alt="image" src="https://github.com/user-attachments/assets/8bb17116-8008-4cd0-9e87-96946a35fcb0" />
-<img width="1867" height="1288" alt="image" src="https://github.com/user-attachments/assets/8e1d990d-a8b6-4741-86ae-371affcdf97d" />
+<img width="1848" height="1298" alt="image" src="https://github.com/user-attachments/assets/b2b101da-298e-4361-ae06-d50ba6b517f6" />
+<img width="1839" height="1458" alt="image" src="https://github.com/user-attachments/assets/fb0440a4-631f-4275-8b0c-a226dc2da0d2" />
 <img width="1868" height="1287" alt="image" src="https://github.com/user-attachments/assets/4b85ef5d-4712-408a-804f-e81041c37ee9" />
 <img width="1877" height="1283" alt="image" src="https://github.com/user-attachments/assets/23c75844-ce12-4469-8bdc-be44985c8bc8" />
 <img width="1879" height="1279" alt="image" src="https://github.com/user-attachments/assets/94d412b4-8400-4a0b-8ed5-d7726ae60f9f" />
