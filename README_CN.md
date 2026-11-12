@@ -1,6 +1,13 @@
 # ARKS NEXUS
 
 [日本語](README.md) | 中文
+<img width="1878" height="1336" alt="image" src="https://github.com/user-attachments/assets/62e74c44-694f-4ac6-91c9-fdacb41f1026" />
+<img width="1872" height="1461" alt="image" src="https://github.com/user-attachments/assets/569151ec-f4d9-4f84-bd7d-82e175f1909c" />
+<img width="1873" height="1518" alt="image" src="https://github.com/user-attachments/assets/ac8e3587-668f-42fb-be52-b81e977ad78d" />
+<img width="1871" height="1283" alt="image" src="https://github.com/user-attachments/assets/404e34d2-63df-438f-9cef-ee6bdee46d2a" />
+<img width="1880" height="1260" alt="image" src="https://github.com/user-attachments/assets/ab788b94-a23a-4bec-84b8-099c8212dac9" />
+<img width="1878" height="1539" alt="image" src="https://github.com/user-attachments/assets/a2a0d63d-e7a3-4c3d-a5fe-70976ddd2b8c" />
+
 
 集中启动 5 个 NGS / PSO2 模拟器。
 
