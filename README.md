@@ -1,13 +1,12 @@
 # ARKS NEXUS
 
 日本語 | [中文](README_CN.md)
-<img width="1848" height="1298" alt="image" src="https://github.com/user-attachments/assets/b2b101da-298e-4361-ae06-d50ba6b517f6" />
-<img width="1839" height="1454" alt="image" src="https://github.com/user-attachments/assets/8978a5f4-b3c1-46a9-8558-f9fadc56cdaa" />
-<img width="1868" height="1287" alt="image" src="https://github.com/user-attachments/assets/4b85ef5d-4712-408a-804f-e81041c37ee9" />
-<img width="1877" height="1283" alt="image" src="https://github.com/user-attachments/assets/23c75844-ce12-4469-8bdc-be44985c8bc8" />
-<img width="1879" height="1279" alt="image" src="https://github.com/user-attachments/assets/94d412b4-8400-4a0b-8ed5-d7726ae60f9f" />
-<img width="1870" height="1282" alt="image" src="https://github.com/user-attachments/assets/6beef8a2-5126-402b-9ab4-1f65e4ee7787" />
-
+<img width="1857" height="976" alt="image" src="https://github.com/user-attachments/assets/33715e8c-d2fc-4d62-ba7f-d12946358632" />
+<img width="1846" height="1442" alt="image" src="https://github.com/user-attachments/assets/a6f33584-6325-45df-841f-cac4628a3735" />
+<img width="1845" height="1451" alt="image" src="https://github.com/user-attachments/assets/855c1759-cca7-4bc2-b74f-816dce8d23ec" />
+<img width="1848" height="1202" alt="image" src="https://github.com/user-attachments/assets/cb84c74d-138c-4a61-a17c-851c0a751fdf" />
+<img width="1857" height="1433" alt="image" src="https://github.com/user-attachments/assets/dc3c74b7-b339-4e0d-b489-ce66317a96e5" />
+<img width="1857" height="1113" alt="image" src="https://github.com/user-attachments/assets/f3eb6c96-8f41-4136-9f4a-0ee6ee1408da" />
 
 NGS / PSO2 の5つのシミュレーターをまとめたランチャーです。
 
